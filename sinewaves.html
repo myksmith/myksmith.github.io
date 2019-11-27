@@ -1,0 +1,280 @@
+<html>
+
+<head>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+
+    svg {
+      min-width: 1000px;
+    }
+
+    span {
+      display: inline-block;
+      padding-left: 1em;
+      border-top: 2px solid;
+      border-radius: 1em 0 0 0;
+    }
+
+    .slidecontainer {
+      width: 100%;
+      /* Width of the outside container */
+    }
+
+    /* The slider itself */
+    .slider {
+      -webkit-appearance: none;
+      /* Override default CSS styles */
+      appearance: none;
+      width: 100%;
+      /* Full-width */
+      height: 25px;
+      /* Specified height */
+      background: #d3d3d3;
+      /* Grey background */
+      outline: none;
+      /* Remove outline */
+      opacity: 0.7;
+      /* Set transparency (for mouse-over effects on hover) */
+      -webkit-transition: .2s;
+      /* 0.2 seconds transition on hover */
+      transition: opacity .2s;
+    }
+
+    /* Mouse-over effects */
+    .slider:hover {
+      opacity: 1;
+      /* Fully shown on mouse-over */
+    }
+
+    /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      /* Override default look */
+      appearance: none;
+      width: 25px;
+      /* Set a specific slider handle width */
+      height: 25px;
+      /* Slider handle height */
+      background: #4CAF50;
+      /* Green background */
+      cursor: pointer;
+      /* Cursor on hover */
+    }
+
+    .slider::-moz-range-thumb {
+      width: 25px;
+      /* Set a specific slider handle width */
+      height: 25px;
+      /* Slider handle height */
+      background: #4CAF50;
+      /* Green background */
+      cursor: pointer;
+      /* Cursor on hover */
+    }
+  </style>
+</head>
+
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="400" viewBox="-6.3 -6 12.6 12" preserveAspectRatio="xMidYMid slice">
+    <g id="axes" stroke="black" stroke-width=".01">
+      <line x1="-100" y1="0" x2="100" y2="0" />
+      <line x1="0" y1="-100" x2="0" y2="100" />
+    </g>
+
+    <g id="sines" stroke-width=".02">
+    </g>
+  </svg>
+
+  <script>
+    function approximateCubicBezier(svg, controls, style, freq, offset, classname) {
+      var path = document.createElementNS("http://www.w3.org/2000/svg", "path"),
+        data;
+
+      //Bezier control points:
+      //https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#Curve_commands
+      var controlStart = controls[0],
+        control1 = controls[1],
+        control2 = controls[2],
+        controlEnd = controls[3],
+        x, y,
+        x1, y1,
+        x2, y2,
+        quarterX = controlEnd[0],
+        startX = -(4 * quarterX) - offset,
+        negateY = false;
+
+      function negateYs() {
+        if (negateY) {
+          y = -y;
+          y1 = -y1;
+          y2 = -y2;
+        }
+      }
+
+      for (x = startX; x < (-2 * startX);) {
+        if (x === startX) {
+          y = controlStart[1];
+          x1 = x + control1[0] / freq;
+          y1 = control1[1];
+
+          negateYs();
+          data = 'M' + [x, y] + ' C' + [x1, y1] + ' ';
+        } else {
+          //x1/y1 are always "mirrors" of the previous x2/y2,
+          //so we can use the simpler "S" syntax instead of a new "C":
+          data += ' S'
+        }
+
+        //Going from y=0 to y=+-1:
+        x2 = x + control2[0] / freq;
+        y2 = control2[1];
+        x += (quarterX / freq);
+        y = controlEnd[1];
+        negateYs();
+        data += [x2, y2] + ' ' + [x, y];
+
+        //Going from y=+- back to y=0:
+        x2 = (x + (quarterX / freq)) - (control1[0] / freq);
+        y2 = control1[1];
+        x += (quarterX / freq);
+        y = controlStart[1];
+        negateYs();
+        data += ' S' + [x2, y2] + ' ' + [x, y];
+
+        negateY = !negateY;
+      }
+
+      console.log(data);
+
+      //path.setAttribute('d', 'M0,0 C0.5123,0.5123 1.0023,1 1.5708,1 S2.5,0.5 3.14,0');
+      path.setAttribute('d', data);
+      path.setAttribute('style', style);
+      path.setAttribute('class', classname)
+      svg.appendChild(path);
+    }
+
+    //Draw some sine waves:
+    var sinesGroup = document.querySelector('#sines');
+
+    var controlsBetter = [
+      [0, 0],
+      [0.512286623256592433, 0.512286623256592433],
+      [1.002313685767898599, 1],
+      [Math.PI / 2, 1]
+    ];
+    var offset0 = 0;
+    var offset1 = 0;
+    var offset2 = 0;
+    var offset3 = 0;
+
+    function drawAll(){
+      var blendmode = document.getElementById('modeselector').value;
+      sinesGroup.innerHTML = '';
+      approximateCubicBezier(
+        sinesGroup,
+        controlsBetter,
+        'stroke:grey;fill:grey;mix-blend-mode:' + blendmode,
+        1, offset0, "sinea");
+      approximateCubicBezier(
+        sinesGroup,
+        controlsBetter,
+        'stroke:#ff0000;fill:#ff0000;mix-blend-mode:' + blendmode,
+        2, offset1, "sinea");
+      approximateCubicBezier(
+        sinesGroup,
+        controlsBetter,
+        'stroke:#00ff00;fill:#00ff00;mix-blend-mode:' + blendmode,
+        15/8, offset2, "sinea");
+      approximateCubicBezier(
+        sinesGroup,
+        controlsBetter,
+        'stroke:#0000ff;fill:#0000ff;mix-blend-mode:' + blendmode,
+        5/3, offset3, "sinea");
+    }
+    drawAll();
+  </script>
+
+    <div class="slidecontainer">
+      <input type="range" min="0" max="100" value="0" class="slider" id="slider0">
+      <p>Value: <span id="output0"></span></p>
+      <input type="range" min="0" max="100" value="0" class="slider" id="slider1">
+      <p>Value: <span id="output1"></span></p>
+      <input type="range" min="0" max="100" value="0" class="slider" id="slider2">
+      <p>Value: <span id="output2"></span></p>
+      <input type="range" min="0" max="100" value="0" class="slider" id="slider3">
+      <p>Value: <span id="output3"></span></p>
+    </div>
+
+    <p>Blend mode:
+    <div class="text-center b30"> <select id="modeselector"> <option value="color">color</option> <option value="color-burn">color-burn</option> <option value="color-dodge">color-dodge</option> <option value="darken">darken</option> <option value="difference">difference</option> <option value="exclusion">exclusion</option> <option value="hard-light">hard-light</option> <option value="hue">hue</option> <option value="lighten">lighten</option> <option value="luminosity">luminosity</option> <option value="multiply">multiply</option> <option value="normal">normal</option> <option value="overlay">overlay</option> <option value="saturation">saturation</option> <option value="screen" selected="">screen</option> <option value="soft-light">soft-light</option> </select></div>
+    </p>
+    <script>
+      var selectEl = document.getElementById('modeselector');
+      var path = document.getElementsByClassName('sinea');
+      selectEl.addEventListener('change', function(event) {
+        for (var i = 0; i < path.length; i++) {
+          path[i].style.mixBlendMode = event.target.value;
+        }
+      });
+    </script>
+
+    <p>Background/text color:
+    <div> <select id="bgcolorselector">
+      <option value="black/white" selected="">black/white</option>
+      <option value="white/black">white/black</option>
+      <option value="grey/black">grey/black</option>
+      <option value="#aa9966/black">skin/black</option>
+    </select>
+    </div>
+    </p>
+    <script>
+      document.getElementById('bgcolorselector').addEventListener(
+        'change', function (event){
+          var colors = event.target.value.split('/');
+          document.body.style.backgroundColor = colors[0];
+          document.body.style.color = colors[1];
+        }
+      )
+    </script>
+
+
+
+    <script>
+      var slider0 = document.getElementById("slider0");
+      var output0 = document.getElementById("output0");
+      output0.innerHTML = slider0.value;
+      var slider1 = document.getElementById("slider1");
+      var output1 = document.getElementById("output1");
+      output1.innerHTML = slider1.value;
+      var slider2 = document.getElementById("slider2");
+      var output2 = document.getElementById("output2");
+      output2.innerHTML = slider2.value;
+      var slider3 = document.getElementById("slider3");
+      var output3 = document.getElementById("output3");
+      output3.innerHTML = slider2.value;
+
+      slider0.oninput = function() {
+        output0.innerHTML = this.value;
+        offset0 = Math.PI * 2 * (this.value / 100)
+        drawAll();
+      }
+      slider1.oninput = function() {
+        output1.innerHTML = this.value;
+        offset1 = Math.PI * 2 * (this.value / 100)
+        drawAll();
+      }
+      slider2.oninput = function(){
+        output2.innerHTML = this.value;
+        offset2 = Math.PI * 2 * (this.value / 100)
+        drawAll();
+      }
+      slider3.oninput = function(){
+        output3.innerHTML = this.value;
+        offset3 = Math.PI * 2 * (this.value / 100)
+        drawAll();
+      }
+      drawAll();
+    </script>
+</html>
