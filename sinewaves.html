@@ -156,6 +156,26 @@
       path.setAttribute('class', classname)
       svg.appendChild(path);
     }
+
+    var offsetArray = [0,0,0,0];
+    var sineStrokeColors = ['grey', '#ff0000','#00ff00','#0000ff'];
+    var sineFillColors = ['grey', '#ff0000','#00ff00','#0000ff'];
+    var sineFreqencies = [1, 2, 15/8, 5/3];
+
+    function drawAll(){
+      var blendmode = document.getElementById('modeselector').value;
+      sinesGroup.innerHTML = '';
+      for(var i=0; i<4; i++){
+        approximateCubicBezier(
+          sinesGroup,
+          controlsBetter,
+          'stroke:' + sineStrokeColors[i] +
+            ';fill:' + sineFillColors[i] +
+            ';mix-blend-mode:' + blendmode,
+          sineFreqencies[i], offsetArray[i], "sinea");
+      }
+    }
+
   </script>
 
     <div class="slidecontainer" id="slidecontainer">
@@ -202,10 +222,6 @@
       [1.002313685767898599, 1],
       [Math.PI / 2, 1]
     ];
-    var offset0 = 0;
-    var offset1 = 0;
-    var offset2 = 0;
-    var offset3 = 0;
 
     document.getElementById('bgcolorselector').addEventListener(
       'change', function (event){
@@ -214,45 +230,23 @@
         document.body.style.color = colors[1];
       }
     )
+    var phaseSliderArray = [];
     for (var i=0; i<4; i++){
       var phaseSlider = document.getElementById("slider" + i);
       var phaseOutput = document.getElementById("output" + i);
       phaseOutput.innerHTML = phaseSlider.value;
 
-      phaseSlider.oninput =
-        (function (mylocalvariable) {
+      phaseSliderArray.push(phaseSlider);
+      phaseSliderArray[phaseSliderArray.length - 1].oninput =
+        (function (mylocalvariable, index) {
           return function(){
             mylocalvariable.innerHTML = this.value;
-            offset0 = Math.PI * 2 * (this.value / 100)
+            offsetArray[index] = Math.PI * 2 * (this.value / 100)
             drawAll();;
           }
-        })(phaseOutput);
+        })(phaseOutput, i);
     }
 
-    function drawAll(){
-      var blendmode = document.getElementById('modeselector').value;
-      sinesGroup.innerHTML = '';
-      approximateCubicBezier(
-        sinesGroup,
-        controlsBetter,
-        'stroke:grey;fill:grey;mix-blend-mode:' + blendmode,
-        1, offset0, "sinea");
-      approximateCubicBezier(
-        sinesGroup,
-        controlsBetter,
-        'stroke:#ff0000;fill:#ff0000;mix-blend-mode:' + blendmode,
-        2, offset1, "sinea");
-      approximateCubicBezier(
-        sinesGroup,
-        controlsBetter,
-        'stroke:#00ff00;fill:#00ff00;mix-blend-mode:' + blendmode,
-        15/8, offset2, "sinea");
-      approximateCubicBezier(
-        sinesGroup,
-        controlsBetter,
-        'stroke:#0000ff;fill:#0000ff;mix-blend-mode:' + blendmode,
-        5/3, offset3, "sinea");
-    }
     drawAll();
     </script>
 
