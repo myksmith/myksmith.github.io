@@ -244,6 +244,21 @@
 
 
     <script>
+      for (var i=0; i<4; i++){
+        var phaseSlider = document.getElementById("slider" + i);
+        var phaseOutput = document.getElementById("output" + i);
+        phaseOutput.innerHTML = phaseSlider.value;
+
+        phaseSlider.oninput =
+          (function (mylocalvariable) {
+            return function(){
+              mylocalvariable.innerHTML = this.value;
+              offset0 = Math.PI * 2 * (this.value / 100)
+              drawAll();;
+            }
+          })(phaseOutput);
+      }
+      /*
       var slider0 = document.getElementById("slider0");
       var output0 = document.getElementById("output0");
       output0.innerHTML = slider0.value;
@@ -277,6 +292,7 @@
         offset3 = Math.PI * 2 * (this.value / 100)
         drawAll();
       }
+      */
       drawAll();
     </script>
 </html>
