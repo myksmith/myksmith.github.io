@@ -156,49 +156,9 @@
       path.setAttribute('class', classname)
       svg.appendChild(path);
     }
-
-    //Draw some sine waves:
-    var sinesGroup = document.querySelector('#sines');
-
-    var controlsBetter = [
-      [0, 0],
-      [0.512286623256592433, 0.512286623256592433],
-      [1.002313685767898599, 1],
-      [Math.PI / 2, 1]
-    ];
-    var offset0 = 0;
-    var offset1 = 0;
-    var offset2 = 0;
-    var offset3 = 0;
-
-    function drawAll(){
-      var blendmode = document.getElementById('modeselector').value;
-      sinesGroup.innerHTML = '';
-      approximateCubicBezier(
-        sinesGroup,
-        controlsBetter,
-        'stroke:grey;fill:grey;mix-blend-mode:' + blendmode,
-        1, offset0, "sinea");
-      approximateCubicBezier(
-        sinesGroup,
-        controlsBetter,
-        'stroke:#ff0000;fill:#ff0000;mix-blend-mode:' + blendmode,
-        2, offset1, "sinea");
-      approximateCubicBezier(
-        sinesGroup,
-        controlsBetter,
-        'stroke:#00ff00;fill:#00ff00;mix-blend-mode:' + blendmode,
-        15/8, offset2, "sinea");
-      approximateCubicBezier(
-        sinesGroup,
-        controlsBetter,
-        'stroke:#0000ff;fill:#0000ff;mix-blend-mode:' + blendmode,
-        5/3, offset3, "sinea");
-    }
-    drawAll();
   </script>
 
-    <div class="slidecontainer">
+    <div class="slidecontainer" id="slidecontainer">
       <input type="range" min="0" max="100" value="0" class="slider" id="slider0">
       <p>Value: <span id="output0"></span></p>
       <input type="range" min="0" max="100" value="0" class="slider" id="slider1">
@@ -231,68 +191,69 @@
     </select>
     </div>
     </p>
-    <script>
-      document.getElementById('bgcolorselector').addEventListener(
-        'change', function (event){
-          var colors = event.target.value.split('/');
-          document.body.style.backgroundColor = colors[0];
-          document.body.style.color = colors[1];
-        }
-      )
-    </script>
-
-
 
     <script>
-      for (var i=0; i<4; i++){
-        var phaseSlider = document.getElementById("slider" + i);
-        var phaseOutput = document.getElementById("output" + i);
-        phaseOutput.innerHTML = phaseSlider.value;
+    //Draw some sine waves:
+    var sinesGroup = document.querySelector('#sines');
 
-        phaseSlider.oninput =
-          (function (mylocalvariable) {
-            return function(){
-              mylocalvariable.innerHTML = this.value;
-              offset0 = Math.PI * 2 * (this.value / 100)
-              drawAll();;
-            }
-          })(phaseOutput);
-      }
-      /*
-      var slider0 = document.getElementById("slider0");
-      var output0 = document.getElementById("output0");
-      output0.innerHTML = slider0.value;
-      var slider1 = document.getElementById("slider1");
-      var output1 = document.getElementById("output1");
-      output1.innerHTML = slider1.value;
-      var slider2 = document.getElementById("slider2");
-      var output2 = document.getElementById("output2");
-      output2.innerHTML = slider2.value;
-      var slider3 = document.getElementById("slider3");
-      var output3 = document.getElementById("output3");
-      output3.innerHTML = slider2.value;
+    var controlsBetter = [
+      [0, 0],
+      [0.512286623256592433, 0.512286623256592433],
+      [1.002313685767898599, 1],
+      [Math.PI / 2, 1]
+    ];
+    var offset0 = 0;
+    var offset1 = 0;
+    var offset2 = 0;
+    var offset3 = 0;
 
-      slider0.oninput = function() {
-        output0.innerHTML = this.value;
-        offset0 = Math.PI * 2 * (this.value / 100)
-        drawAll();
+    document.getElementById('bgcolorselector').addEventListener(
+      'change', function (event){
+        var colors = event.target.value.split('/');
+        document.body.style.backgroundColor = colors[0];
+        document.body.style.color = colors[1];
       }
-      slider1.oninput = function() {
-        output1.innerHTML = this.value;
-        offset1 = Math.PI * 2 * (this.value / 100)
-        drawAll();
-      }
-      slider2.oninput = function(){
-        output2.innerHTML = this.value;
-        offset2 = Math.PI * 2 * (this.value / 100)
-        drawAll();
-      }
-      slider3.oninput = function(){
-        output3.innerHTML = this.value;
-        offset3 = Math.PI * 2 * (this.value / 100)
-        drawAll();
-      }
-      */
-      drawAll();
+    )
+    for (var i=0; i<4; i++){
+      var phaseSlider = document.getElementById("slider" + i);
+      var phaseOutput = document.getElementById("output" + i);
+      phaseOutput.innerHTML = phaseSlider.value;
+
+      phaseSlider.oninput =
+        (function (mylocalvariable) {
+          return function(){
+            mylocalvariable.innerHTML = this.value;
+            offset0 = Math.PI * 2 * (this.value / 100)
+            drawAll();;
+          }
+        })(phaseOutput);
+    }
+
+    function drawAll(){
+      var blendmode = document.getElementById('modeselector').value;
+      sinesGroup.innerHTML = '';
+      approximateCubicBezier(
+        sinesGroup,
+        controlsBetter,
+        'stroke:grey;fill:grey;mix-blend-mode:' + blendmode,
+        1, offset0, "sinea");
+      approximateCubicBezier(
+        sinesGroup,
+        controlsBetter,
+        'stroke:#ff0000;fill:#ff0000;mix-blend-mode:' + blendmode,
+        2, offset1, "sinea");
+      approximateCubicBezier(
+        sinesGroup,
+        controlsBetter,
+        'stroke:#00ff00;fill:#00ff00;mix-blend-mode:' + blendmode,
+        15/8, offset2, "sinea");
+      approximateCubicBezier(
+        sinesGroup,
+        controlsBetter,
+        'stroke:#0000ff;fill:#0000ff;mix-blend-mode:' + blendmode,
+        5/3, offset3, "sinea");
+    }
+    drawAll();
     </script>
+
 </html>
