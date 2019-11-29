@@ -166,12 +166,13 @@
           return element * document.getElementById("slider4").value/10;
         });
       for(var i=0; i<4; i++){
+        var ampscale = document.getElementById("slideramp"+i).value/100;
         approximateCubicBezier(
           sinesGroup,
-          controlsBetter,
+          controlsBetter.map(v=> {return [ v[0], v[1]*ampscale];}),
           ('stroke:' + sineStrokeColors[i] +
             ((document.getElementById("isFilledCB" + i).checked == true) ?
-              (';fill:' + sineFillColors[i]) : "")
+              (';fill:' + sineFillColors[i]) : ";fill-opacity:0.0")
               + ';mix-blend-mode:' + blendmode),
           multSineFrequencies[i], offsetArray[i], "sinea");
       }
@@ -181,7 +182,11 @@
 
     <div class="slidecontainer" id="slidecontainer">
       <input type="range" min="0" max="100" value="0" class="slider" id="slider0">
-      <p>Grey phase: <span id="output0"></span>
+      <p><select id="firstcolorselector">
+        <option value="grey" selected="selected">Grey</option>
+        <option value="white">white</option>
+        <option value="black">black</option>
+      </select> phase: <span id="output0"></span>
         <input type="checkbox"
             onclick='fillCheckboxClick(this, 0);'
             id="isFilledCB0"
@@ -190,6 +195,7 @@
             checked>
         </input>
         <label for="isFilledCB0">Filled</label>
+        <input type="range" min="0" max="100" value="100" class="slideramp" id="slideramp0" oninput="drawAll();">
       </p>
       <input type="range" min="0" max="100" value="0" class="slider" id="slider1">
       <p>Red phase: <span id="output1"></span>
@@ -201,6 +207,7 @@
             checked>
         </input>
         <label for="isFilledCB1">Filled</label>
+        <input type="range" min="0" max="100" value="100" class="slideramp" id="slideramp1" oninput="drawAll();">
       </p>
       <input type="range" min="0" max="100" value="0" class="slider" id="slider2">
       <p>Green phase: <span id="output2"></span>
@@ -212,6 +219,7 @@
             checked>
         </input>
         <label for="isFilledCB2">Filled</label>
+        <input type="range" min="0" max="100" value="100" class="slideramp" id="slideramp2" oninput="drawAll();">
       </p>
       <input type="range" min="0" max="100" value="0" class="slider" id="slider3">
       <p>Blue phase: <span id="output3"></span>
@@ -223,6 +231,7 @@
             checked>
         </input>
         <label for="isFilledCB3">Filled</label>
+        <input type="range" min="0" max="100" value="100" class="slideramp" id="slideramp3" oninput="drawAll();">
       </p>
       <input type="range" min="1" max="100" value="10" class="slider" id="slider4">
       <p>Frequency multiplier: <span id="output4"></span></p>
@@ -264,17 +273,6 @@
       <option value="grey/black">grey/black</option>
       <option value="#aa9966/black">skin/black</option>
     </select>
-    <!--
-    <div>
-      <input type="checkbox"
-        onclick='fillCheckboxClick(this);'
-        id="isFilledCB"
-        name="isFilledCB"
-        value="isFilled"
-        checked>
-    </input>
-    <label for="isFilledCB">Filled</label>
-  </div> -->
     </p>
 
     <script>
@@ -287,13 +285,22 @@
       [Math.PI / 2, 1]
     ];
 
+    document.getElementById('firstcolorselector').addEventListener(
+      'change', function (event){
+        sineStrokeColors[0] = event.target.value;
+        sineFillColors[0] = event.target.value;
+        drawAll();
+      }
+    );
+
     document.getElementById('bgcolorselector').addEventListener(
       'change', function (event){
         var colors = event.target.value.split('/');
         document.body.style.backgroundColor = colors[0];
         document.body.style.color = colors[1];
       }
-    )
+    );
+
     var phaseSliderArray = [];
     for (var i=0; i<4; i++){
       var phaseSlider = document.getElementById("slider" + i);
