@@ -12,13 +12,6 @@
       min-width: 1000px;
     }
 
-    span {
-      display: inline-block;
-      padding-left: 1em;
-      border-top: 2px solid;
-      border-radius: 1em 0 0 0;
-    }
-
     .slidecontainer {
       width: 100%;
       /* Width of the outside container */
@@ -79,7 +72,10 @@
 </head>
 
 <body>
-  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="400" viewBox="-6.3 -6 12.6 12" preserveAspectRatio="xMidYMid slice">
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%"
+    height="400"
+    viewBox="-6.3 -6 12.6 12"
+    preserveAspectRatio="xMidYMid slice">
     <g id="axes" stroke="black" stroke-width=".01">
       <line x1="-100" y1="0" x2="100" y2="0" />
       <line x1="0" y1="-100" x2="0" y2="100" />
@@ -148,8 +144,6 @@
         negateY = !negateY;
       }
 
-      console.log(data);
-
       //path.setAttribute('d', 'M0,0 C0.5123,0.5123 1.0023,1 1.5708,1 S2.5,0.5 3.14,0');
       path.setAttribute('d', data);
       path.setAttribute('style', style);
@@ -164,15 +158,21 @@
 
     function drawAll(){
       var blendmode = document.getElementById('modeselector').value;
+
       sinesGroup.innerHTML = '';
+      var multSineFrequencies = sineFreqencies.map(
+        element => {
+          return element * document.getElementById("slider4").value/10;
+        });
       for(var i=0; i<4; i++){
         approximateCubicBezier(
           sinesGroup,
           controlsBetter,
-          'stroke:' + sineStrokeColors[i] +
-            ';fill:' + sineFillColors[i] +
-            ';mix-blend-mode:' + blendmode,
-          sineFreqencies[i], offsetArray[i], "sinea");
+          ('stroke:' + sineStrokeColors[i] +
+            ((document.getElementById("isFilledCB").checked == true) ?
+              (';fill:' + sineFillColors[i]) : "")
+              + ';mix-blend-mode:' + blendmode),
+          multSineFrequencies[i], offsetArray[i], "sinea");
       }
     }
 
@@ -180,17 +180,36 @@
 
     <div class="slidecontainer" id="slidecontainer">
       <input type="range" min="0" max="100" value="0" class="slider" id="slider0">
-      <p>Value: <span id="output0"></span></p>
+      <p>Grey phase: <span id="output0"></span></p>
       <input type="range" min="0" max="100" value="0" class="slider" id="slider1">
-      <p>Value: <span id="output1"></span></p>
+      <p>Red phase: <span id="output1"></span></p>
       <input type="range" min="0" max="100" value="0" class="slider" id="slider2">
-      <p>Value: <span id="output2"></span></p>
+      <p>Green phase: <span id="output2"></span></p>
       <input type="range" min="0" max="100" value="0" class="slider" id="slider3">
-      <p>Value: <span id="output3"></span></p>
+      <p>Blue phase: <span id="output3"></span></p>
+      <input type="range" min="1" max="100" value="10" class="slider" id="slider4">
+      <p>Frequency multiplier: <span id="output4"></span></p>
     </div>
 
     <p>Blend mode:
-    <div class="text-center b30"> <select id="modeselector"> <option value="color">color</option> <option value="color-burn">color-burn</option> <option value="color-dodge">color-dodge</option> <option value="darken">darken</option> <option value="difference">difference</option> <option value="exclusion">exclusion</option> <option value="hard-light">hard-light</option> <option value="hue">hue</option> <option value="lighten">lighten</option> <option value="luminosity">luminosity</option> <option value="multiply">multiply</option> <option value="normal">normal</option> <option value="overlay">overlay</option> <option value="saturation">saturation</option> <option value="screen" selected="">screen</option> <option value="soft-light">soft-light</option> </select></div>
+     <select id="modeselector">
+       <option value="color">color</option>
+       <option value="color-burn">color-burn</option>
+       <option value="color-dodge">color-dodge</option>
+       <option value="darken">darken</option>
+       <option value="difference">difference</option>
+       <option value="exclusion">exclusion</option>
+       <option value="hard-light">hard-light</option>
+       <option value="hue">hue</option>
+       <option value="lighten">lighten</option>
+       <option value="luminosity">luminosity</option>
+       <option value="multiply">multiply</option>
+       <option value="normal">normal</option>
+       <option value="overlay">overlay</option>
+       <option value="saturation">saturation</option>
+       <option value="screen" selected="">screen</option>
+       <option value="soft-light">soft-light</option>
+     </select>
     </p>
     <script>
       var selectEl = document.getElementById('modeselector');
@@ -202,18 +221,25 @@
       });
     </script>
 
-    <p>Background/text color:
-    <div> <select id="bgcolorselector">
+    <p>Background/text color: <select id="bgcolorselector">
       <option value="black/white" selected="selected">black/white</option>
       <option value="white/black">white/black</option>
       <option value="grey/black">grey/black</option>
       <option value="#aa9966/black">skin/black</option>
     </select>
+    <div>
+      <input type="checkbox"
+        onclick='fillCheckboxClick(this);'
+        id="isFilledCB"
+        name="isFilledCB"
+        value="isFilled"
+        checked>
+    </input>
+    <label for="isFilledCB">Filled</label>
     </div>
     </p>
 
     <script>
-    //Draw some sine waves:
     var sinesGroup = document.querySelector('#sines');
 
     var controlsBetter = [
@@ -245,6 +271,20 @@
             drawAll();;
           }
         })(phaseOutput, i);
+    }
+    var freqSlider = document.getElementById("slider4");
+    var freqOutput = document.getElementById("output4");
+    freqOutput.innerHTML = freqSlider.value;
+    freqSlider.oninput =
+      function(){
+        freqOutput.innerHTML = this.value / 10;
+        drawAll();
+      }
+
+    // checkbox callback
+    function fillCheckboxClick(cb){
+      drawAll();
+      console.log("checkbox: " + cb.checked);
     }
 
     drawAll();
