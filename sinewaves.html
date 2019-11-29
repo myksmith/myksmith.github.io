@@ -155,6 +155,7 @@
     var sineStrokeColors = ['grey', '#ff0000','#00ff00','#0000ff'];
     var sineFillColors = ['grey', '#ff0000','#00ff00','#0000ff'];
     var sineFreqencies = [1, 2, 15/8, 5/3];
+    var sineIsFilled = [1,1,1,1];
 
     function drawAll(){
       var blendmode = document.getElementById('modeselector').value;
@@ -169,7 +170,7 @@
           sinesGroup,
           controlsBetter,
           ('stroke:' + sineStrokeColors[i] +
-            ((document.getElementById("isFilledCB").checked == true) ?
+            ((document.getElementById("isFilledCB" + i).checked == true) ?
               (';fill:' + sineFillColors[i]) : "")
               + ';mix-blend-mode:' + blendmode),
           multSineFrequencies[i], offsetArray[i], "sinea");
@@ -180,13 +181,49 @@
 
     <div class="slidecontainer" id="slidecontainer">
       <input type="range" min="0" max="100" value="0" class="slider" id="slider0">
-      <p>Grey phase: <span id="output0"></span></p>
+      <p>Grey phase: <span id="output0"></span>
+        <input type="checkbox"
+            onclick='fillCheckboxClick(this, 0);'
+            id="isFilledCB0"
+            name="isFilledCB0"
+            value="isFilled0"
+            checked>
+        </input>
+        <label for="isFilledCB0">Filled</label>
+      </p>
       <input type="range" min="0" max="100" value="0" class="slider" id="slider1">
-      <p>Red phase: <span id="output1"></span></p>
+      <p>Red phase: <span id="output1"></span>
+        <input type="checkbox"
+            onclick='fillCheckboxClick(this, 1);'
+            id="isFilledCB1"
+            name="isFilledCB1"
+            value="isFilled1"
+            checked>
+        </input>
+        <label for="isFilledCB1">Filled</label>
+      </p>
       <input type="range" min="0" max="100" value="0" class="slider" id="slider2">
-      <p>Green phase: <span id="output2"></span></p>
+      <p>Green phase: <span id="output2"></span>
+        <input type="checkbox"
+            onclick='fillCheckboxClick(this, 2);'
+            id="isFilledCB2"
+            name="isFilledCB2"
+            value="isFilled2"
+            checked>
+        </input>
+        <label for="isFilledCB2">Filled</label>
+      </p>
       <input type="range" min="0" max="100" value="0" class="slider" id="slider3">
-      <p>Blue phase: <span id="output3"></span></p>
+      <p>Blue phase: <span id="output3"></span>
+        <input type="checkbox"
+            onclick='fillCheckboxClick(this, 3);'
+            id="isFilledCB3"
+            name="isFilledCB3"
+            value="isFilled3"
+            checked>
+        </input>
+        <label for="isFilledCB3">Filled</label>
+      </p>
       <input type="range" min="1" max="100" value="10" class="slider" id="slider4">
       <p>Frequency multiplier: <span id="output4"></span></p>
     </div>
@@ -227,6 +264,7 @@
       <option value="grey/black">grey/black</option>
       <option value="#aa9966/black">skin/black</option>
     </select>
+    <!--
     <div>
       <input type="checkbox"
         onclick='fillCheckboxClick(this);'
@@ -236,7 +274,7 @@
         checked>
     </input>
     <label for="isFilledCB">Filled</label>
-    </div>
+  </div> -->
     </p>
 
     <script>
@@ -282,9 +320,9 @@
       }
 
     // checkbox callback
-    function fillCheckboxClick(cb){
+    function fillCheckboxClick(cb, num){
+      sineIsFilled[num] = cb.checked;
       drawAll();
-      console.log("checkbox: " + cb.checked);
     }
 
     drawAll();
