@@ -333,6 +333,34 @@
     }
 
     drawAll();
+
+    function frame(s, inc)
+    {
+      var v = Number(s.value);
+      v = (v+inc)%100;
+      if(v<0) v= v+100;
+      s.value = v;
+      s.oninput();
+    }
+
+    function doanimate(){
+      for(var i=0; i<4;i++){
+        var names = ['slider', 'slideramp'];
+        for(var j=0; j<2; j++){
+          var s = document.getElementById(names[j] + i);
+          // figure out rates of change for everything
+          var tid = setInterval(
+              frame,
+              Math.random()*50,
+              s,
+              Math.round(Math.random())*2 - 1    // 1 or -1
+            );
+          setTimeout(clearInterval, 5000, tid);
+        }
+      }
+    };
     </script>
+
+    <button type="button" onclick="doanimate();">DO NOT PRESS</button>
 
 </html>
