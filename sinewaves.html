@@ -154,7 +154,7 @@
     var offsetArray = [0,0,0,0];
     var sineStrokeColors = ['grey', '#ff0000','#00ff00','#0000ff'];
     var sineFillColors = ['grey', '#ff0000','#00ff00','#0000ff'];
-    var sineFreqencies = [1, 2, 15/8, 5/3];
+    var sineFreqencies = [1, 2, 16/9, 27/16];
     var sineIsFilled = [1,1,1,1];
 
     function drawAll(){
@@ -358,8 +358,14 @@
           setTimeout(clearInterval, 5000, tid);
         }
       }
-    };
+    }
+
+    function showparams(){
+
+    }
     </script>
+
+    <button type="button" onclick="showparams();">Show Parameters</button>.
 
     <button type="button" onclick="doanimate();">DO NOT PRESS</button>
 
