@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<svg height="400" width="900">
+  <style>
+  	.rot1 {
+    	to: "15 450 350";
+    }
+  </style>
+
+
+  <defs>
+  	<symbol id="leafpath">
+	    <path d="M 450 350 q 135 -150 0 -300 q -135 150 0 300"/>
+    </symbol>
+    <symbol id="leaf">
+    	<use xlink:href="#leafpath" stroke="none" stroke-width="5" fill="blue" fill-opacity="0.4" />
+    </symbol>
+    <symbol id="leafline">
+    	<use xlink:href="#leafpath" stroke="white" stroke-width="5" fill="none" />
+    </symbol>
+  </defs>
+
+
+  <use xlink:href="#leaf" transform="rotate(15 450 350)">
+    <animateTransform class="rot1" attributeName="transform"
+                            attributeType="XML"
+                            type="rotate"
+                            from="0 450 350"
+                            to="15 450 350"
+                            dur="3s"
+                            repeatCount="1"/>
+  </use>
+  <use xlink:href="#leaf" transform="rotate(40 450 350)">
+      <animateTransform attributeName="transform"
+                            attributeType="XML"
+                            type="rotate"
+                            from="0 450 350"
+                            to="40 450 350"
+                            dur="3s"
+                            repeatCount="1"/>
+  </use>
+  <use xlink:href="#leaf" transform="rotate(-15 450 350)">
+      <animateTransform attributeName="transform"
+                            attributeType="XML"
+                            type="rotate"
+                            from="0 450 350"
+                            to="-15 450 350"
+                            dur="3s"
+                            repeatCount="1"/>
+  </use>
+  <use xlink:href="#leaf" transform="rotate(-40 450 350)">
+      <animateTransform attributeName="transform"
+                            attributeType="XML"
+                            type="rotate"
+                            from="0 450 350"
+                            to="-40 450 350"
+                            dur="3s"
+                            repeatCount="1"/>
+  </use>
+
+  <use xlink:href="#leafline" transform="rotate(15 450 350)">
+      <animateTransform attributeName="transform"
+                            attributeType="XML"
+                            type="rotate"
+                            from="0 450 350"
+                            to="15 450 350"
+                            dur="3s"
+                            repeatCount="1"/>
+  </use>
+
+  <use xlink:href="#leafline" transform="rotate(40 450 350)">
+        <animateTransform attributeName="transform"
+                            attributeType="XML"
+                            type="rotate"
+                            from="0 450 350"
+                            to="40 450 350"
+                            dur="3s"
+                            repeatCount="1"/>
+  </use>
+
+  <use xlink:href="#leafline" transform="rotate(-15 450 350)">
+        <animateTransform attributeName="transform"
+                            attributeType="XML"
+                            type="rotate"
+                            from="0 450 350"
+                            to="-15 450 350"
+                            dur="3s"
+                            repeatCount="1"/>
+  </use>
+
+  <use xlink:href="#leafline" transform="rotate(-40 450 350)" id="leftmostline" clip-path="url(#rightmostleaf)">
+        <animateTransform attributeName="transform"
+                            attributeType="XML"
+                            type="rotate"
+                            from="0 450 350"
+                            to="-40 450 350"
+                            dur="3s"
+                            repeatCount="1"/>
+  </use>
+
+  <!-- Mark relevant points -->
+  Sorry, your browser does not support inline SVG.
+</svg>
+
+</body>
+</html>
